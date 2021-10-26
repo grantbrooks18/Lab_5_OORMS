@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+!include style.puml
+header Brooks and MacDonald
+title Create Bill
+actor server
+participant "view : \nServerView" as view
+participant "restaurant"
+participant "controller : \nTableController" as controller
+participant "controller2 : \nReciptController" as Rcontroller
+
+server -> view ++ : Presses button to create the bill
+view ->controller++: make_bills()
+loop for seat in table
+controller -> order: check if the seat has an order
+controller -> controller--: add seat to list to display
+end
+create recipt
+
+controller --> recipt: List of seats with orders
+
+controller -> view: display recipt
+
+view -> Rcontroller : displaybill()
+Rcontroller -> recipt: getinfo()
+
+'controller -> items++: mark_as_served()
+'items->items--: item.state="SERVED"
+'view->restaurant++: notify_view()
+@enduml
+
+Loop througth the seats on the table
+we need to display all the seats' orders
+we need to create the buttons to indicate bill number
+
+we need to add the seats that have orders to the drop down list
+
+
