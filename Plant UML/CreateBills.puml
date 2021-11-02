@@ -7,7 +7,8 @@ actor server
 participant "view : \nServerView" as view
 participant "restaurant"
 participant "controller : \nTableController" as controller
-participant "controller2 : \nReciptController" as Rcontroller
+participant "controller2 : \nReceiptController" as Rcontroller
+participant "tk.Frame : \nPrinter" as printer
 
 server -> view ++ : Presses button to create the bill
 view ->controller++: make_bills()
@@ -15,21 +16,27 @@ loop for seat in table
 controller -> order: check if the seat has an order
 controller -> controller--: add seat to list to display
 end
-create recipt
+create receipt
 
-controller --> recipt: List of seats with orders
+controller --> receipt: List of seats with orders
 
-controller -> view: display recipt
+controller -> view: display receipt
 
 view -> Rcontroller : displaybill()
-Rcontroller -> recipt: getinfo()
+Rcontroller -> receipt: getinfo()
 
+loop for item in order
+
+receipt -> order : to_print[item].append('item' - 'price')
+end
+
+receipt->printer : print(receipt)
 'controller -> items++: mark_as_served()
 'items->items--: item.state="SERVED"
 'view->restaurant++: notify_view()
 @enduml
 
-Loop througth the seats on the table
+Loop through the seats on the table
 we need to display all the seats' orders
 we need to create the buttons to indicate bill number
 
