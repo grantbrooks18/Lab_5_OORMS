@@ -9,6 +9,7 @@ participant "restaurant"
 participant "controller : \nTableController" as controller
 participant "controller2 : \nReceiptController" as Rcontroller
 participant "tk.Frame : \nPrinter" as printer
+participant "list[items]:\nledger" as ledger
 
 server -> view ++ : Presses button to create the bill
 view ->controller++: make_bills()
@@ -31,10 +32,17 @@ receipt -> order : to_print[item].append('item' - 'price')
 end
 
 receipt->printer : print(receipt)
+
+
+
+
+
 'controller -> items++: mark_as_served()
 'items->items--: item.state="SERVED"
 'view->restaurant++: notify_view()
 @enduml
+could make ledger instead of log.txt
+-data easier to manipulate if in object instead
 
 Loop through the seats on the table
 we need to display all the seats' orders

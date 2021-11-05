@@ -1,0 +1,32 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+!include style.puml
+header Brooks and MacDonald
+title Mark Bill as Paid
+
+actor server
+
+participant "view : \nServerView" as view
+participant "controller : \nTableController" as Tcontroller
+participant "controller2 : \nReceiptController" as Rcontroller
+participant "tk.Frame : \nPrinter" as printer
+participant "list[items]:\nledger" as ledger
+participant "restaurant :\n  Restaurant " as restaurant
+participant "order :\n OrderController" as controller
+participant "order :\nOrder" as order
+
+
+server -> view: [press paid button]
+view->Rcontroller : mark_as_paid()
+
+Rcontroller->ledger : add_receipt()
+Rcontroller->controller : clear_table()
+
+loop for orders in table
+loop for items in order
+controller->order: remove(item)
+order -> order : remove_items(item)
+end
+end
+view -> restaurant ++: notify_view()
+@enduml
