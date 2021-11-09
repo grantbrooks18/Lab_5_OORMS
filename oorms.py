@@ -154,7 +154,13 @@ class ServerView(RestaurantView):
         y = SEAT_DIAM * seats_per_side + SEAT_SPACING * (seats_per_side - 1) + RECEIPT_MARGIN
         line_count = 1
         for ix in options:
-            self.canvas.create_text(x, y + RECEIPT_MARGIN*line_count, text=str(ix), anchor=tk.W)
+            self.canvas.create_text(x, y + RECEIPT_MARGIN*line_count, text="Table "+str(ix), anchor=tk.W)
+
+            def handler(_, order=ix):
+                pass
+
+            self.make_button(str(ix), handler, size=(10, 10), location=(x+RECEIPT_MARGIN*2,
+                                                                        y + RECEIPT_MARGIN*line_count-5))
             line_count = line_count + 1
             if line_count > 4:
                 x = RECEIPT_MARGIN * 5
