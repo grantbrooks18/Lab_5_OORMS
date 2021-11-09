@@ -76,4 +76,7 @@ CANCEL_STYLE = {'fill': '#900', 'outline': '#900'}
 NOT_YET_ORDERED_STYLE = {'fill': '#fff', 'outline': '#090'}
 ORDERED_STYLE = BUTTON_STYLE
 
+# Receipt view constants
+RECEIPT_MARGIN = 30
+
 

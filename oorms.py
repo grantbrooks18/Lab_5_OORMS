@@ -140,6 +140,26 @@ class ServerView(RestaurantView):
                                 text=f'Total: {order.total_cost():.2f}',
                                 anchor=tk.NW)
 
+    def create_receipt_ui(self, table):
+        options = []
+        for ix, order in enumerate(self.controller.table.orders):
+            if self.controller.table.has_order_for(ix):
+                options.append(ix)
+
+        self.draw_receipt(options)
+
+    def draw_receipt(self, options, location=None, scale=1):
+        x = RECEIPT_MARGIN
+        seats_per_side = math.ceil(self.controller.table.n_seats / 2)
+        y = SEAT_DIAM * seats_per_side + SEAT_SPACING * (seats_per_side - 1) + RECEIPT_MARGIN
+        line_count = 1
+        for ix in options:
+            self.canvas.create_text(x, y + RECEIPT_MARGIN*line_count, text=str(ix), anchor=tk.W)
+            line_count = line_count + 1
+            if line_count > 4:
+                x = RECEIPT_MARGIN * 5
+                line_count = 1
+
 
 class Printer(tk.Frame):
     """

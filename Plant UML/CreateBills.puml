@@ -13,13 +13,16 @@ participant "list[items]:\nledger" as ledger
 
 server -> view ++ : Presses button to create the bill
 view ->controller++: make_bills()
-loop for seat in table
-controller -> order: check if the seat has an order
-controller -> controller--: add seat to list to display
-end
-create receipt
+controller -> Rcontroller++: make_bills()
 
-controller --> receipt: List of seats with orders
+loop for order in table
+Rcontroller -> Rcontroller: add seat to list to display
+create receipt
+Rcontroller --> receipt: List of seats with orders
+end
+
+
+
 
 controller -> view: display receipt
 

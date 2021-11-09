@@ -43,7 +43,10 @@ class TableController(Controller):
         # TODO: switch to appropriate controller & UI so server can create and print bills
         # for this table. The following line illustrates how bill printing works, but the
         # actual printing should happen in the (new) controller, not here.
-        printer.print(f'Set up bills for table {self.restaurant.tables.index(self.table)}')
+        self.view.set_controller(ReceiptController(self.view, self.restaurant, self.table))
+        self.view.controller.make_bills()
+
+
 
     def done(self):
         self.view.set_controller(RestaurantController(self.view, self.restaurant))
@@ -77,3 +80,35 @@ class OrderController(Controller):
         self.order.remove_unordered_items()
         self.view.set_controller(TableController(self.view, self.restaurant, self.table))
         self.restaurant.notify_views()
+
+
+class ReceiptController(Controller):
+
+    def __init__(self, view, restaurant, table):
+        super().__init__(view, restaurant)
+        self.table = table
+        self.receipt = []
+        self.total = 0
+
+    def create_ui(self):
+        self.view.create_receipt_ui(self.table)
+
+    def make_bills(self):
+        self.view.create_receipt_ui(self.table)
+        self.restaurant.notify_views()
+
+    def print_bills(self, printer):
+        # prints all orders in one bill
+        # as of now, only prints entire
+        # table
+        printer.print(f'Set up bills for table {self.restaurant.tables.index(self.table)}')
+        for order in self.table.orders:
+            for items in order.items:
+                self.total = self.total+items.details.price
+                printer.print(items.details.name + " $" + str(items.details.price))
+                self.receipt.append(items.details.name + " $" + str(items.details.price))
+        printer.print("Total:     $"+str(self.total))
+
+
+
+
