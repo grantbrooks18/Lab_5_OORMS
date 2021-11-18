@@ -101,9 +101,10 @@ class ReceiptController(Controller):
             printer.print(" Seat " + str(orders) + " pays for seat " + str(seat))
             total = 0
             for item in self.table.orders[seat].items:
+                print(billing.get(seat))
                 printer.print(f'      {item.details.name} $ {item.details.price}')
                 total = total + item.details.price
-            printer.print(f'      Total$ {total}')
+            printer.print(f'      Total $ {total}')
 
 
 
