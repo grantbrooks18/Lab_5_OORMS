@@ -46,8 +46,6 @@ class TableController(Controller):
         self.view.set_controller(ReceiptController(self.view, self.restaurant, self.table))
         self.view.controller.make_bills()
 
-
-
     def done(self):
         self.view.set_controller(RestaurantController(self.view, self.restaurant))
         self.view.update()
@@ -97,10 +95,11 @@ class ReceiptController(Controller):
         self.view.create_receipt_ui(self.table)
         self.restaurant.notify_views()
 
-    def print_bills(self, printer):
+    def print_bills(self, printer, tables, billing):
         # prints all orders in one bill
         # as of now, only prints entire
         # table
+
         printer.print(f'Set up bills for table {self.restaurant.tables.index(self.table)}')
         for order in self.table.orders:
             for items in order.items:

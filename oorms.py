@@ -145,26 +145,31 @@ class ServerView(RestaurantView):
         for ix, order in enumerate(self.controller.table.orders):
             if self.controller.table.has_order_for(ix):
                 options.append(ix)
+        buttons = options.copy()
+        self.draw_receipt(options, buttons)
 
-        self.draw_receipt(options)
-
-    def draw_receipt(self, options, location=None, scale=1):
+    def draw_receipt(self, options, buttons):
         x = RECEIPT_MARGIN
         seats_per_side = math.ceil(self.controller.table.n_seats / 2)
         y = SEAT_DIAM * seats_per_side + SEAT_SPACING * (seats_per_side - 1) + RECEIPT_MARGIN
         line_count = 1
+
         for ix in options:
-            self.canvas.create_text(x, y + RECEIPT_MARGIN*line_count, text="Table "+str(ix), anchor=tk.W)
+            self.canvas.create_text(x, y + RECEIPT_MARGIN*line_count, text="Seat "+str(ix), anchor=tk.W)
 
-            def handler(_, order=ix):
-                pass
+            def handler(_, seat=ix):
+                index = options.index(seat)
+                next_index = (options.index(buttons[index]) + 1) % len(options)
+                buttons[index] = options[next_index]
+                self.draw_receipt(options, buttons)
 
-            self.make_button(str(ix), handler, size=(10, 10), location=(x+RECEIPT_MARGIN*2,
+            self.make_button(str(buttons[options.index(ix)]), handler, size=(12, 12), location=(x+RECEIPT_MARGIN*2,
                                                                         y + RECEIPT_MARGIN*line_count-5))
             line_count = line_count + 1
             if line_count > 4:
                 x = RECEIPT_MARGIN * 5
                 line_count = 1
+
 
 
 class Printer(tk.Frame):
