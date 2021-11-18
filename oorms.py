@@ -170,6 +170,9 @@ class ServerView(RestaurantView):
                 x = RECEIPT_MARGIN * 5
                 line_count = 1
 
+        billing = dict(zip(options, buttons))
+        self.make_button('Print Bill', lambda event: self.controller.print_bills(self.printer_window, billing),
+                                                                            location=BUTTON_BOTTOM_LEFT)
 
 
 class Printer(tk.Frame):

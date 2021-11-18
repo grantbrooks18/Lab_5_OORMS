@@ -95,18 +95,17 @@ class ReceiptController(Controller):
         self.view.create_receipt_ui(self.table)
         self.restaurant.notify_views()
 
-    def print_bills(self, printer, tables, billing):
-        # prints all orders in one bill
-        # as of now, only prints entire
-        # table
+    def print_bills(self, printer, billing):
+        printer.print(f'Set up bills for Table {self.restaurant.tables.index(self.table)}:')
+        for seat, orders in billing.items():
+            printer.print(" Seat " + str(orders) + " pays for seat " + str(seat))
+            total = 0
+            for item in self.table.orders[seat].items:
+                printer.print(f'      {item.details.name} $ {item.details.price}')
+                total = total + item.details.price
+            printer.print(f'      Total$ {total}')
 
-        printer.print(f'Set up bills for table {self.restaurant.tables.index(self.table)}')
-        for order in self.table.orders:
-            for items in order.items:
-                self.total = self.total+items.details.price
-                printer.print(items.details.name + " $" + str(items.details.price))
-                self.receipt.append(items.details.name + " $" + str(items.details.price))
-        printer.print("Total:     $"+str(self.total))
+
 
 
 
