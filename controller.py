@@ -95,6 +95,10 @@ class ReceiptController(Controller):
         self.view.create_receipt_ui(self.table)
         self.restaurant.notify_views()
 
+    def done(self):
+        self.view.set_controller(RestaurantController(self.view, self.restaurant))
+        self.view.update()
+
     def print_bills(self, printer, billing):
         printer.print(f'Set up bills for Table {self.restaurant.tables.index(self.table)}:')
         for seat, orders in billing.items():
