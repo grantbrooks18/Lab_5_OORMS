@@ -100,18 +100,24 @@ class ReceiptController(Controller):
         self.view.update()
 
     def print_bills(self, printer, billing):
-        printer.print(f'Set up bills for Table {self.restaurant.tables.index(self.table)}:')
+        printer.print(f'Bills for Table {self.restaurant.tables.index(self.table)}:')
+        total = 0
         for seat, orders in billing.items():
-            total = 0
+            subtotal = 0
             new = [key for key, value in billing.items() if value == seat]#list of orders for the seat
             if new: #if the seat is paying for an order
                 printer.print(" Seat " + str(orders)+":")
             for order in new:
                 for item in self.table.orders[order].items:
+                    subtotal = subtotal + item.details.price
                     total = total + item.details.price
-                    printer.print(f'      {item.details.name} $ {item.details.price}')
-            if total != 0:
-                printer.print(f'      Total $ {total}')
+                    printer.print(f'      {item.details.name:20} $ {item.details.price:.2f}')
+
+            if subtotal != 0:
+                printer.print(f' Seat Total{" ":15} $ {subtotal:.2f}')
+                printer.print(f' ')  # blank line
+        printer.print(f' ')#blank line
+        printer.print(f'Table Total:{" ":14} $ {total:.2f}')
 
 
 
