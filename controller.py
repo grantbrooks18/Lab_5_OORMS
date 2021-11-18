@@ -98,13 +98,18 @@ class ReceiptController(Controller):
     def print_bills(self, printer, billing):
         printer.print(f'Set up bills for Table {self.restaurant.tables.index(self.table)}:')
         for seat, orders in billing.items():
-            printer.print(" Seat " + str(orders) + " pays for seat " + str(seat))
             total = 0
-            for item in self.table.orders[seat].items:
-                print(billing.get(seat))
-                printer.print(f'      {item.details.name} $ {item.details.price}')
-                total = total + item.details.price
-            printer.print(f'      Total $ {total}')
+            new = [key for key, value in billing.items() if value == seat]#list of orders for the seat
+            if new: #if the seat is paying for an order
+                printer.print(" Seat " + str(orders)+":")
+            for order in new:
+                for item in self.table.orders[order].items:
+                    total = total + item.details.price
+                    printer.print(f'      {item.details.name} $ {item.details.price}')
+            if total != 0:
+                printer.print(f'      Total $ {total}')
+
+
 
 
 
