@@ -7,36 +7,26 @@ actor server
 participant "view : \nServerView" as view
 participant "restaurant"
 participant "controller : \nTableController" as controller
-participant "controller2 : \nReceiptController" as Rcontroller
+participant "controller : \nReceiptController" as Rcontroller
 participant "tk.Frame : \nPrinter" as printer
 participant "list[items]:\nledger" as ledger
 
 server -> view ++ : Presses button to create the bill
 view ->controller++: make_bills()
+controller->view:set_controller(ReceiptController)
+view->view: self.controller = controller
 controller -> Rcontroller++: make_bills()
+Rcontroller->view: create_receipt_ui(table)
 
-loop for order in table
-Rcontroller -> Rcontroller: add seat to list to display
-create receipt
-Rcontroller --> receipt: List of seats with orders
-end
+view->view: options = []
 
-
-
-
-controller -> view: display receipt
-
-view -> Rcontroller : displaybill()
-Rcontroller -> receipt: getinfo()
-
-loop for item in order
-
-receipt -> order : to_print[item].append('item' - 'price')
-end
-
-receipt->printer : print(receipt)
-
-
+loop for ix, order in enumerate(orders)
+alt if table.has_order_for(ix)
+view->view:options.append(ix)
+end alt
+end loop
+view->view: buttons = options.copy()
+view->view: draw_receipt(options, buttons)
 
 
 
