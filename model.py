@@ -110,6 +110,7 @@ class Receipt:
     def __init__(self):
         self.seats = []
         self.billing = []
+        self.total = 0
 
     def update_receipt(self, new_seats, new_billing):
         self.seats = new_seats.copy()
@@ -136,5 +137,7 @@ class Receipt:
                 printer.print(f' ')  # blank line
         printer.print(f' ')  # blank line
         printer.print(f'Table Total:{" ":14} $ {total:.2f}')
+        self.total = total
+
 
 

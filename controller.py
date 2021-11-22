@@ -138,10 +138,11 @@ class ReceiptController(Controller):
 
     def print_bills(self, printer, receipt):
         self.table.receipt.print_receipt(printer, self.restaurant.tables.index(self.table), self.table)
+        self.view.draw_receipt(self.table.receipt)
 
     def checktotal(self):
         i = 12
-        return self.total
+        return self.table.receipt.total
 
     def cleanup(self, billing):
         self.view.ledger.copy_bills(billing,self.table)
