@@ -1,0 +1,15 @@
+ Seat 1:
+      Hunters Rabbit Stew  $ 19.00
+ Seat Total                $ 19.00
+
+ Seat 2:
+      Cornish Rock Hen     $ 23.00
+ Seat Total                $ 23.00
+
+ Seat 7:
+      Roasted Squash       $ 14.00
+      Striploin Sandwich   $ 16.00
+ Seat Total                $ 30.00
+
+
+Table Total:               $ 72.00

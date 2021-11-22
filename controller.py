@@ -118,7 +118,6 @@ class ReceiptController(Controller):
     def __init__(self, view, restaurant, table):
         super().__init__(view, restaurant)
         self.table = table
-        self.total = 0
 
     def create_ui(self):
         self.view.create_receipt_ui(self.table)
@@ -139,7 +138,6 @@ class ReceiptController(Controller):
         self.view.draw_receipt(self.table.receipt)
 
     def checktotal(self):
-        i = 12
         return self.table.receipt.total
 
     def cleanup(self, receipt):

@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+!include style.puml
+header Brooks and MacDonald
+title Create Bill
+actor server
+participant "view : \nServerView" as view
+participant "receipt:\nReceipt" as receipt
+
+
+server -> view ++ : Presses button to cycle bill
+view->view: handler(seat)
+view->view:index = seats.index(seat) \nnext_index = (seats.index(billing[index]) + 1) % len(seats)
+view->receipt
+receipt->receipt:billing[index] = seats[next_index]
+view->view:draw_receipt(receipt)
+@enduml

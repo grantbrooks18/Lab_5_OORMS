@@ -1,27 +1,35 @@
 @startuml
 'https://plantuml.com/class-diagram
+class LedgerController{
+copy_bills(receipt,table)
+}
+abstract Controller{
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
+}
+class Receipt{
+seats:list [int]
+billing: list[int]
+total: int
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
+print_receipt(printer, int, table)
 
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
+}
+class Table
+class ReceiptController{
+table: Table
+make_bills()
+update_receipt(seats, billing)
+print_bills(printer, receipt)
+cleanup(receipt)
+check_total()
 
-class ArrayList {
-Object[] elementData
-size()
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
-}
+ReceiptController..>Controller
+LedgerController..>Controller
+ReceiptController->Table:table
+Table -> Receipt:receipt
+
+LedgerController-->Receipt:0... receipt
 
 @enduml
