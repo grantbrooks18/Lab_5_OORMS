@@ -87,7 +87,7 @@ class Ledger(Controller):
         self.receipts=[]
 
 
-    def copy_bills(self, billing, table):
+    def copy_bills(self, recipt, table):
         date = datetime.now().strftime("%Y_%m_%d-%I-%M-%S_%p")#This has a limitation that only one recipt can be printed
                                                             #per minute. In the real world, this seems reasonable.
                                                             #Otherwise, the record will be overwritten.
@@ -96,23 +96,25 @@ class Ledger(Controller):
         filepath=os.path.join('receipts',f'Table_{self.restaurant.tables.index(table)}_on_{date}.txt')
         f = open(filepath,"w")
         total = 0
-        for seat, orders in billing.items():
+
+        zipped = dict(zip(recipt.seats, recipt.billing))
+
+        for seat, orders in zipped.items():
             subtotal = 0
-            new = [key for key, value in billing.items() if value == seat]#list of orders for the seat
-            if new: #if the seat is paying for an order
-                f.write(" Seat " + str(orders)+":\n")
-            for order in new:
+            orders_for_seat = [key for key, value in zipped.items() if value == seat]  # list of orders for the seat
+            if orders_for_seat:  # if the seat is paying for an order (not null)
+                f.write(" Seat " + str(orders) + ":\n")
+            for order in orders_for_seat:
                 for item in table.orders[order].items:
                     subtotal = subtotal + item.details.price
                     total = total + item.details.price
                     f.write(f'      {item.details.name:20} $ {item.details.price:.2f}\n')
-
             if subtotal != 0:
                 f.write(f' Seat Total{" ":15} $ {subtotal:.2f}\n')
                 f.write(f'\n')  # blank line
-        f.write(f'\n')#blank line
+        f.write(f'\n')  # blank line
         f.write(f'Table Total:{" ":14} $ {total:.2f}\n')
-        self.receipts.append(filepath)
+
 
 
 class ReceiptController(Controller):
@@ -144,8 +146,8 @@ class ReceiptController(Controller):
         i = 12
         return self.table.receipt.total
 
-    def cleanup(self, billing):
-        self.view.ledger.copy_bills(billing,self.table)
+    def cleanup(self, receipt):
+        self.view.ledger.copy_bills(receipt, self.table)
 
         for order in self.table.orders:
             order.items.clear()

@@ -180,7 +180,7 @@ class ServerView(RestaurantView):
 
 
         if self.controller.checktotal() != 0: #This should be limiting the finalize button until the print bill has ran
-            self.make_button('Finalize', lambda event: self.controller.cleanup(billing),
+            self.make_button('Finalize', lambda event: self.controller.cleanup(receipt),
                                                                             location=BUTTON_BOTTOM_MIDDLE)
 
 
