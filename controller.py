@@ -6,7 +6,8 @@ Submission date: [date here]
 
 Original code by EEE320 instructors.
 """
-
+import os.path
+from datetime import datetime
 
 class Controller:
 
@@ -85,8 +86,34 @@ class Ledger(Controller):
         super().__init__(view, restaurant)
         self.receipts=[]
 
-    def addme(self, paid):
-        self.receipts.append(paid)
+
+    def copy_bills(self, billing, table):
+        date = datetime.now().strftime("%Y_%m_%d-%I-%M-%S_%p")#This has a limitation that only one recipt can be printed
+                                                            #per minute. In the real world, this seems reasonable.
+                                                            #Otherwise, the record will be overwritten.
+        if not os.path.isdir("receipts"): #Checks if the receipt folder exists
+            os.makedirs("receipts")         #creates the folder if needed
+        filepath=os.path.join('receipts',f'Table_{self.restaurant.tables.index(table)}_on_{date}.txt')
+        f = open(filepath,"w")
+        f.write("This is a test")
+        total = 0
+        for seat, orders in billing.items():
+            subtotal = 0
+            new = [key for key, value in billing.items() if value == seat]#list of orders for the seat
+            if new: #if the seat is paying for an order
+                f.write(" Seat " + str(orders)+":\n")
+            for order in new:
+                for item in table.orders[order].items:
+                    subtotal = subtotal + item.details.price
+                    total = total + item.details.price
+                    f.write(f'      {item.details.name:20} $ {item.details.price:.2f}\n')
+
+            if subtotal != 0:
+                f.write(f' Seat Total{" ":15} $ {subtotal:.2f}\n')
+                f.write(f'\n')  # blank line
+        f.write(f'\n')#blank line
+        f.write(f'Table Total:{" ":14} $ {total:.2f}\n')
+        self.receipts.append(filepath)
 
 
 class ReceiptController(Controller):
@@ -138,7 +165,7 @@ class ReceiptController(Controller):
 
         print("entry")
 
-        self.view.ledger.addme(billing)
+        self.view.ledger.copy_bills(billing,self.table)
 
         for order in self.table.orders:
             #print("Clearing order", order)
