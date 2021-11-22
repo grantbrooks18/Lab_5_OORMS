@@ -118,6 +118,19 @@ class ReceiptController(Controller):
                 printer.print(f' ')  # blank line
         printer.print(f' ')#blank line
         printer.print(f'Table Total:{" ":14} $ {total:.2f}')
+        self.total = total
+        self.create_ui()
+
+    def checktotal(self):
+        i = 12
+        return self.total
+
+    def cleanup(self, billing):
+
+        self.receipt.append(billing.items())
+
+
+
 
 
 

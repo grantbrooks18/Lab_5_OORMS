@@ -154,6 +154,7 @@ class ServerView(RestaurantView):
         y = SEAT_DIAM * seats_per_side + SEAT_SPACING * (seats_per_side - 1) + RECEIPT_MARGIN
         line_count = 1
 
+
         for ix in options:
             self.canvas.create_text(x, y + RECEIPT_MARGIN*line_count, text="Seat "+str(ix), anchor=tk.W)
 
@@ -173,6 +174,14 @@ class ServerView(RestaurantView):
         billing = dict(zip(options, buttons))
         self.make_button('Print Bill', lambda event: self.controller.print_bills(self.printer_window, billing),
                                                                             location=BUTTON_BOTTOM_LEFT)
+
+
+        if self.controller.checktotal() != 0: #This should be limiting the finalize button until the print bill has ran
+            print("Hello", self.controller.checktotal)
+            self.make_button('Finalize', lambda event: self.controller.print_bills(self.printer_window, billing),
+                                                                            location=BUTTON_BOTTOM_MIDDLE)
+        else:
+            print("this should happen")
 
 
 class Printer(tk.Frame):
