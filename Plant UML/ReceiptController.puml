@@ -28,7 +28,7 @@ check_total()
 ReceiptController..>Controller
 LedgerController..>Controller
 ReceiptController->Table:table
-Table -> Receipt:receipt
+Table --> Receipt: receipt
 
 LedgerController-->Receipt:0... receipt
 

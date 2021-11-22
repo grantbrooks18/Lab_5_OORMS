@@ -1,0 +1,13 @@
+ Seat 2:
+      Roasted Squash       $ 14.00
+      Portabella Burger    $ 14.00
+ Seat Total                $ 28.00
+
+ Seat 5:
+      Butter Chicken Tacos $ 16.00
+      Portabella Burger    $ 14.00
+      Beef Cheek           $ 24.00
+ Seat Total                $ 54.00
+
+
+Table Total:               $ 82.00
