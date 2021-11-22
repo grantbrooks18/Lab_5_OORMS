@@ -14,7 +14,7 @@ import tkinter as tk
 from abc import ABC
 
 from constants import *
-from controller import RestaurantController
+from controller import RestaurantController, Ledger
 from model import Restaurant
 
 
@@ -31,6 +31,8 @@ class RestaurantView(tk.Frame, ABC):
         self.restaurant.add_view(self)
         self.controller = controller_class(self, restaurant)
         self.controller.create_ui()
+
+        self.ledger = Ledger(self,self.restaurant)
 
     def make_button(self, text, action, size=BUTTON_SIZE, location=BUTTON_BOTTOM_RIGHT,
                     rect_style=BUTTON_STYLE, text_style=BUTTON_TEXT_STYLE):
@@ -177,8 +179,7 @@ class ServerView(RestaurantView):
 
 
         if self.controller.checktotal() != 0: #This should be limiting the finalize button until the print bill has ran
-            print("Hello", self.controller.checktotal)
-            self.make_button('Finalize', lambda event: self.controller.print_bills(self.printer_window, billing),
+            self.make_button('Finalize', lambda event: self.controller.cleanup(billing),
                                                                             location=BUTTON_BOTTOM_MIDDLE)
         else:
             print("this should happen")

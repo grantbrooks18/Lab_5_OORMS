@@ -80,6 +80,15 @@ class OrderController(Controller):
         self.restaurant.notify_views()
 
 
+class Ledger(Controller):
+    def __init__(self, view, restaurant):
+        super().__init__(view, restaurant)
+        self.receipts=[]
+
+    def addme(self, paid):
+        self.receipts.append(paid)
+
+
 class ReceiptController(Controller):
 
     def __init__(self, view, restaurant, table):
@@ -127,8 +136,15 @@ class ReceiptController(Controller):
 
     def cleanup(self, billing):
 
-        self.receipt.append(billing.items())
+        print("entry")
 
+        self.view.ledger.addme(billing)
+
+        for order in self.table.orders:
+            #print("Clearing order", order)
+            order.items.clear()
+        self.view.set_controller(RestaurantController(self.view,self.restaurant))
+        self.restaurant.notify_views()
 
 
 
