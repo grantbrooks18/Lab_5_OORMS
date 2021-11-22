@@ -95,7 +95,6 @@ class Ledger(Controller):
             os.makedirs("receipts")         #creates the folder if needed
         filepath=os.path.join('receipts',f'Table_{self.restaurant.tables.index(table)}_on_{date}.txt')
         f = open(filepath,"w")
-        f.write("This is a test")
         total = 0
         for seat, orders in billing.items():
             subtotal = 0
@@ -162,13 +161,9 @@ class ReceiptController(Controller):
         return self.total
 
     def cleanup(self, billing):
-
-        print("entry")
-
         self.view.ledger.copy_bills(billing,self.table)
 
         for order in self.table.orders:
-            #print("Clearing order", order)
             order.items.clear()
         self.view.set_controller(RestaurantController(self.view,self.restaurant))
         self.restaurant.notify_views()
