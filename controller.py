@@ -41,9 +41,6 @@ class TableController(Controller):
         self.view.update()
 
     def make_bills(self, printer):
-        # TODO: switch to appropriate controller & UI so server can create and print bills
-        # for this table. The following line illustrates how bill printing works, but the
-        # actual printing should happen in the (new) controller, not here.
         self.view.set_controller(ReceiptController(self.view, self.restaurant, self.table))
         self.view.controller.make_bills()
 
@@ -114,7 +111,6 @@ class Ledger(Controller):
                 f.write(f'\n')  # blank line
         f.write(f'\n')  # blank line
         f.write(f'Table Total:{" ":14} $ {total:.2f}\n')
-
 
 
 class ReceiptController(Controller):
