@@ -143,46 +143,45 @@ class ServerView(RestaurantView):
                                 anchor=tk.NW)
 
     def create_receipt_ui(self, table):
-        options = []
+        seats_with_orders = []
         for ix, order in enumerate(self.controller.table.orders):
             if self.controller.table.has_order_for(ix):
-                options.append(ix)
-        buttons = options.copy()
-        self.draw_receipt(options, buttons)
+                seats_with_orders.append(ix)
+        billing = seats_with_orders.copy()
+        self.controller.update_receipt(seats_with_orders, billing)
+        self.draw_receipt(self.controller.table.receipt)
 
-    def draw_receipt(self, options, buttons):
+    def draw_receipt(self, receipt):
         x = RECEIPT_MARGIN
         seats_per_side = math.ceil(self.controller.table.n_seats / 2)
         y = SEAT_DIAM * seats_per_side + SEAT_SPACING * (seats_per_side - 1) + RECEIPT_MARGIN
         line_count = 1
 
-
-        for ix in options:
+        for ix in receipt.seats:
             self.canvas.create_text(x, y + RECEIPT_MARGIN*line_count, text="Seat "+str(ix), anchor=tk.W)
 
             def handler(_, seat=ix):
-                index = options.index(seat)
-                next_index = (options.index(buttons[index]) + 1) % len(options)
-                buttons[index] = options[next_index]
-                self.draw_receipt(options, buttons)
+                index = receipt.seats.index(seat)
+                next_index = (receipt.seats.index(receipt.billing[index]) + 1) % len(receipt.seats)
+                receipt.billing[index] = receipt.seats[next_index]
+                self.draw_receipt(receipt)
 
-            self.make_button(str(buttons[options.index(ix)]), handler, size=(12, 12), location=(x+RECEIPT_MARGIN*2,
-                                                                        y + RECEIPT_MARGIN*line_count-5))
+            self.make_button(str(receipt.billing[receipt.seats.index(ix)]),
+                             handler,
+                             size=(12, 12), location=(x+RECEIPT_MARGIN*2, y + RECEIPT_MARGIN*line_count-5))
+
             line_count = line_count + 1
             if line_count > 4:
                 x = RECEIPT_MARGIN * 5
                 line_count = 1
 
-        billing = dict(zip(options, buttons))
-        self.make_button('Print Bill', lambda event: self.controller.print_bills(self.printer_window, billing),
+        self.make_button('Print Bill', lambda event: self.controller.print_bills(self.printer_window, receipt),
                                                                             location=BUTTON_BOTTOM_LEFT)
 
 
         if self.controller.checktotal() != 0: #This should be limiting the finalize button until the print bill has ran
             self.make_button('Finalize', lambda event: self.controller.cleanup(billing),
                                                                             location=BUTTON_BOTTOM_MIDDLE)
-        else:
-            print("this should happen")
 
 
 class Printer(tk.Frame):

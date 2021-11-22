@@ -121,7 +121,6 @@ class ReceiptController(Controller):
     def __init__(self, view, restaurant, table):
         super().__init__(view, restaurant)
         self.table = table
-        self.receipt = []
         self.total = 0
 
     def create_ui(self):
@@ -131,30 +130,15 @@ class ReceiptController(Controller):
         self.view.create_receipt_ui(self.table)
         self.restaurant.notify_views()
 
+    def update_receipt(self, seats, billing):
+        self.table.receipt.update_receipt(seats, billing)
+
     def done(self):
         self.view.set_controller(RestaurantController(self.view, self.restaurant))
         self.view.update()
 
-    def print_bills(self, printer, billing):
-        printer.print(f'Bills for Table {self.restaurant.tables.index(self.table)}:')
-        total = 0
-        for seat, orders in billing.items():
-            subtotal = 0
-            orders_for_seat= [key for key, value in billing.items() if value == seat]#list of orders for the seat
-            if orders_for_seat: #if the seat is paying for an order (not null)
-                printer.print(" Seat " + str(orders)+":")
-            for order in orders_for_seat:
-                for item in self.table.orders[order].items:
-                    subtotal = subtotal + item.details.price
-                    total = total + item.details.price
-                    printer.print(f'      {item.details.name:20} $ {item.details.price:.2f}')
-            if subtotal != 0:
-                printer.print(f' Seat Total{" ":15} $ {subtotal:.2f}')
-                printer.print(f' ')  # blank line
-        printer.print(f' ')#blank line
-        printer.print(f'Table Total:{" ":14} $ {total:.2f}')
-        self.total = total
-        self.create_ui()
+    def print_bills(self, printer, receipt):
+        self.table.receipt.print_receipt(printer, self.restaurant.tables.index(self.table), self.table)
 
     def checktotal(self):
         i = 12

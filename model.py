@@ -33,6 +33,7 @@ class Table:
         self.n_seats = seats
         self.location = location
         self.orders = [Order() for _ in range(seats)]
+        self.receipt = Receipt()
 
     def has_any_active_orders(self):
         for order in self.orders:
@@ -102,3 +103,38 @@ class MenuItem:
     def __init__(self, name, price):
         self.name = name
         self.price = price
+
+
+class Receipt:
+
+    def __init__(self):
+        self.seats = []
+        self.billing = []
+
+    def update_receipt(self, new_seats, new_billing):
+        self.seats = new_seats.copy()
+        self.billing = new_billing.copy()
+
+    def print_receipt(self, printer, tablenum, table):
+        printer.print(f'Bills for Table {tablenum}:')
+        total = 0
+
+        zipped = dict(zip(self.seats, self.billing))
+
+        for seat, orders in zipped.items():
+            subtotal = 0
+            orders_for_seat = [key for key, value in zipped.items() if value == seat]  # list of orders for the seat
+            if orders_for_seat:  # if the seat is paying for an order (not null)
+                printer.print(" Seat " + str(orders) + ":")
+            for order in orders_for_seat:
+                for item in table.orders[order].items:
+                    subtotal = subtotal + item.details.price
+                    total = total + item.details.price
+                    printer.print(f'      {item.details.name:20} $ {item.details.price:.2f}')
+            if subtotal != 0:
+                printer.print(f' Seat Total{" ":15} $ {subtotal:.2f}')
+                printer.print(f' ')  # blank line
+        printer.print(f' ')  # blank line
+        printer.print(f'Table Total:{" ":14} $ {total:.2f}')
+
+
