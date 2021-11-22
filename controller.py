@@ -140,15 +140,14 @@ class ReceiptController(Controller):
         total = 0
         for seat, orders in billing.items():
             subtotal = 0
-            new = [key for key, value in billing.items() if value == seat]#list of orders for the seat
-            if new: #if the seat is paying for an order
+            orders_for_seat= [key for key, value in billing.items() if value == seat]#list of orders for the seat
+            if orders_for_seat: #if the seat is paying for an order (not null)
                 printer.print(" Seat " + str(orders)+":")
-            for order in new:
+            for order in orders_for_seat:
                 for item in self.table.orders[order].items:
                     subtotal = subtotal + item.details.price
                     total = total + item.details.price
                     printer.print(f'      {item.details.name:20} $ {item.details.price:.2f}')
-
             if subtotal != 0:
                 printer.print(f' Seat Total{" ":15} $ {subtotal:.2f}')
                 printer.print(f' ')  # blank line

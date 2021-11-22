@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+!include style.puml
+header Brooks and MacDonald
+title Print Bill
+actor server
+participant "view : \nServerView" as view
+participant "controller : \nReceiptController" as Rcontroller
+participant "tk.Frame : \nPrinter" as printer
+
+server -> view ++ : Presses button to print Bill
+view->Rcontroller++:print_bills(printer_window, billing)
+Rcontroller->printer++:print("Bill title")
+Rcontroller->Rcontroller:total = 0
+loop for seat, order in billing.items()
+Rcontroller->Rcontroller:subtotal = 0
+alt if order_for_seat
+Rcontroller->printer:print("Seat title")
+end alt
+loop for order in orders_for_seat
+Rcontroller->Rcontroller:subtotal+=items.price
+Rcontroller->Rcontroller:total+=items.price
+Rcontroller->printer:print("item and price")
+end loop
+alt if subtotal!=0
+Rcontroller->printer:print("Seat total")
+end alt
+Rcontroller->printer:print("Table total")
+
+Rcontroller->Rcontroller:create_ui()
+
+
+end loop
+
+
+
+
+
+
+@enduml
+
+
