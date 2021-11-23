@@ -9,24 +9,48 @@ actor server
 participant "view : \nServerView" as view
 participant "controller : \nTableController" as Tcontroller
 participant "controller2 : \nReceiptController" as Rcontroller
-participant "tk.Frame : \nPrinter" as printer
+
 participant "list[items]:\nledger" as ledger
 participant "restaurant :\n  Restaurant " as restaurant
-participant "order :\n OrderController" as controller
+
 participant "order :\nOrder" as order
 
 
 server -> view: [press paid button]
-view->Rcontroller : mark_as_paid()
+view->Rcontroller : cleanup(receipt)
+Rcontroller -> ledger: copy_bills(receipt, table)
+ledger -> datetime: date = datetime.now()
 
-Rcontroller->ledger : add_receipt()
-Rcontroller->controller : clear_table()
-
-loop for orders in table
-loop for items in order
-controller->order: remove(item)
-order -> order : remove_items(item)
+alt not os.path.isdir("receipts")
+ledger -> os:makedirs("receipts")
+end
+ledger-> os: filepath = path.join("receipts",date)
+create f
+ledger-> f: open(filepath, "w")
+ledger-> ledger: dict(zip(seats,billing))
+loop for seat, orders in zipped
+ledger -> ledger: subtotal = 0
+ledger -> ledger: orders_for_seat = \n[key for key, value in zipped.items() if value == seat]
+alt orders_for_seat
+ledger->f: write(" seat" + str(orders) + ":\n")
+end
+loop for order in orders_for_seat:
+loop for item in table.orders[order].items
+ledger -> ledger : subtotal += item.detail.price
+ledger -> ledger: total = total + item.detail.price
+ledger -> f: write(f'{item.details.name:20} $ {item.details.price:.2f}\n')
+end
+alt subtotal != 0
+ledger -> f: write(f' Seat Total{" ":15} $ {subtotal:.2f}\n')
+ledger -> f: write(f'\n')
 end
 end
-view -> restaurant ++: notify_view()
+ledger -> f: f.write(f'\\nTable Total:{" ":14} $ {total:.2f}\n')
+loop for order in table.orders:
+Rcontroller -> order: clear
+end
+
+Rcontroller -> view: set_controller(RestaurantController(self.view,self.restaurant))
+Rcontroller -> restaurant: notify_views()
+
 @enduml
