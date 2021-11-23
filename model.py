@@ -78,24 +78,36 @@ class Order:
 
 class OrderItem:
 
-    # TODO: need to represent item state, not just 'ordered', all methods will need modifying
     def __init__(self, menu_item):
         self.details = menu_item
-        self.ordered = False
+        self.__ordered = False
+        self.state = "REQUESTED"
 
     def mark_as_ordered(self):
-        self.ordered = True
+        self.__ordered = True
+        self.state = "PLACED"
 
     def has_been_ordered(self):
-        return self.ordered
+        return self.__ordered
 
     def has_been_served(self):
-        # TODO: correct implementation based on item state
+        if self.state == "SERVED":
+            return True
         return False
 
     def can_be_cancelled(self):
-        # TODO: correct implementation based on item state
-        return True
+        if self.state == "PLACED" or self.state == "REQUESTED":
+            return True
+        return False
+
+    def mark_as_cooking(self):
+        self.state = "COOKING"
+
+    def mark_as_served(self):
+        self.state = "SERVED"
+
+    def mark_as_ready(self):
+        self.state = "READY"
 
 
 class MenuItem:

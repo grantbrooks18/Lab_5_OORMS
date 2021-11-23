@@ -5,11 +5,10 @@ header Brooks and MacDonald
 title Create Bill
 actor server
 participant "view : \nServerView" as view
-participant "restaurant"
 participant "controller : \nTableController" as controller
 participant "controller : \nReceiptController" as Rcontroller
-participant "tk.Frame : \nPrinter" as printer
-participant "list[items]:\nledger" as ledger
+participant "receipt:\nReceipt" as receipt
+
 
 server -> view ++ : Presses button to create the bill
 view ->controller++: make_bills()
@@ -17,30 +16,26 @@ controller->view:set_controller(ReceiptController)
 view->view: self.controller = controller
 controller -> Rcontroller++: make_bills()
 Rcontroller->view: create_receipt_ui(table)
-
-view->view: options = []
-
 loop for ix, order in enumerate(orders)
 alt if table.has_order_for(ix)
-view->view:options.append(ix)
+view->view:seats_with_orders.append(ix)
 end alt
 end loop
-view->view: buttons = options.copy()
-view->view: draw_receipt(options, buttons)
+view->view:billing = seats_with_orders.copy()
 
+view->Rcontroller:update_receipt(seats_with_orders, billing)
+Rcontroller->receipt++:update_receipt(new_seats, new_billing)
+receipt->receipt:seats = new_seats.copy()
+receipt->receipt:billing = new_billing.copy()
+Rcontroller->view:draw_receipt(receipt)
 
+loop for ix in receipt.seats
+
+view->view:make_button(seat_number)
+
+end loop
 
 'controller -> items++: mark_as_served()
 'items->items--: item.state="SERVED"
 'view->restaurant++: notify_view()
 @enduml
-could make ledger instead of log.txt
--data easier to manipulate if in object instead
-
-Loop through the seats on the table
-we need to display all the seats' orders
-we need to create the buttons to indicate bill number
-
-we need to add the seats that have orders to the drop down list
-
-
