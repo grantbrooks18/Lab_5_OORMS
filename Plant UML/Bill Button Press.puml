@@ -2,7 +2,7 @@
 'https://plantuml.com/sequence-diagram
 !include style.puml
 header Brooks and MacDonald
-title Create Bill
+title Change bill seat assignment
 actor server
 participant "view : \nServerView" as view
 participant "receipt:\nReceipt" as receipt

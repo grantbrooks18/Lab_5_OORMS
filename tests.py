@@ -1,11 +1,3 @@
-"""
-Test cases for the OORMS system.
-
-Submitting lab group: [your names here]
-Submission date: [date here]
-
-Original code by EEE320 instructors.
-"""
 
 import unittest
 from enum import Enum, auto
@@ -149,3 +141,17 @@ class OORMSTestCase(unittest.TestCase):
         check_first_three_items(self.restaurant.menu_items, the_order.items)
         self.assertEqual(self.restaurant.menu_items[1], the_order.items[3].details)
         self.assertEqual(self.restaurant.menu_items[2], the_order.items[4].details)
+
+    def test_receipt(self):
+        receipt = self.view.controller.table.receipt
+        seats = [0,4,5]
+        bills = [0,0,5]
+        receipt.update_receipt(seats, bills)
+
+        for x in range(len(seats)):
+            self.assertEqual(seats[x], receipt.seats[x])
+            self.assertEqual(bills[x], receipt.bills[x])
+
+        #receipt.print_receipt was verified manually with tests of the various cases.
+        #Seat total, table total, item names and prices, seat - bill relations were verified
+        #Verification was done on 1, 3 and 8 seats, with 1 seat paying, 2 seats paying and all seats paying.
