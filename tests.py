@@ -151,7 +151,3 @@ class OORMSTestCase(unittest.TestCase):
         for x in range(len(seats)):
             self.assertEqual(seats[x], receipt.seats[x])
             self.assertEqual(bills[x], receipt.bills[x])
-
-        #receipt.print_receipt was verified manually with tests of the various cases.
-        #Seat total, table total, item names and prices, seat - bill relations were verified
-        #Verification was done on 1, 3 and 8 seats, with 1 seat paying, 2 seats paying and all seats paying.
