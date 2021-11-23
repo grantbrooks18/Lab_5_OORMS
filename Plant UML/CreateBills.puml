@@ -6,7 +6,7 @@ title Create Bill
 actor server
 participant "view : \nServerView" as view
 participant "controller : \nTableController" as controller
-participant "controller : \nReceiptController" as Rcontroller
+participant "controller2 : \nReceiptController" as Rcontroller
 participant "receipt:\nReceipt" as receipt
 
 
